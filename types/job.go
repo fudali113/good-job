@@ -1,4 +1,4 @@
-package job
+package types
 
 // Job 执行 Job 的配置
 type Job struct {
@@ -27,8 +27,11 @@ type ExecConfig struct {
 
 // ShardConfig 分片程序的配置
 type ShardConfig struct {
+	// 分片的类型
 	Type   string
+	// 执行分片程序的配置
 	Exec   ExecConfig
+	// 手动设置分片
 	Shards []interface{}
 }
 
