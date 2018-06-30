@@ -8,6 +8,7 @@ import (
 func init() {
 	wsContainer := restful.NewContainer()
 	register(wsContainer, JobResource{})
+	register(wsContainer, PipelineResource{})
 }
 
 func register(container *restful.Container, register RouteRegister) {

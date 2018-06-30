@@ -29,7 +29,7 @@ func main()  {
 	}
 
 	if resp.StatusCode >= 300 {
-		panic("请求返回结果出错，StatusCode: " + resp.StatusCode)
+		panic(fmt.Sprintf("请求返回结果出错，StatusCode: %d", resp.StatusCode))
 	}
 
 	fmt.Println("触发请求成功")
