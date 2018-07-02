@@ -1,14 +1,14 @@
 package main
 
 import (
-	"net/http"
-	"fmt"
 	"flag"
+	"fmt"
+	"net/http"
 )
 
 var id, token, triggerResource string
 
-func main()  {
+func main() {
 
 	flag.StringVar(&id, "id", "", "触发资源的 id")
 	flag.StringVar(&token, "token", "", "你的相关触发 job 或者 pipeline 的 token")

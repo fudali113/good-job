@@ -1,10 +1,10 @@
 package contrller
 
-import(
+import (
 	"github.com/emicklei/go-restful"
 )
 
-type JobResource struct {	
+type JobResource struct {
 }
 
 func (j JobResource) Register(container *restful.Container) {

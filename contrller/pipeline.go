@@ -1,10 +1,10 @@
 package contrller
 
-import(
+import (
 	"github.com/emicklei/go-restful"
 )
 
-type PipelineResource struct {}
+type PipelineResource struct{}
 
 func (p PipelineResource) Register(container *restful.Container) {
 	ws := new(restful.WebService)
