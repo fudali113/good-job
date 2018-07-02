@@ -1,14 +1,12 @@
 package storage
 
 type Pipeline struct {
-	Id   string           `json:"id"`
 	Name string           `json:"name"`
 	Jobs map[string][]Job `json:"jobs"`
 }
 
 // Job 执行 Job 的配置
 type Job struct {
-	Id string `json:"id"`
 	// Job 的名字
 	Name string `json:"name"`
 	// 储存分片后的数据
@@ -18,7 +16,8 @@ type Job struct {
 	// 分片的配置
 	Shard ShardConfig `json:"shard"`
 	// 指定并行度
-	Parallel int `json:"parallel"`
+	Parallel int       `json:"parallel"`
+	Pipeline *Pipeline `json:"pipeline"`
 }
 
 // ExecConfig 执行 job 程序的配置

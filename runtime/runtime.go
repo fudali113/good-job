@@ -1,8 +1,9 @@
 package runtime
 
 import (
-	"context"
 	"github.com/fudali113/good-job/storage"
+	"k8s.io/api/batch/v1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 type JobRuntime struct {
@@ -19,7 +20,7 @@ type PipelineRuntime struct {
 }
 
 type Runtime interface {
-	RunJob(job storage.Job) (context.CancelFunc, error)
-	RunPipeline(pipeline storage.Pipeline) (context.CancelFunc, error)
-	CreateCron(resource, id, token string) error
+	CreateJob(job storage.Job, exec storage.ExecConfig) (k8sJob *v1.Job, err error)
+	WatchJob(name string) (watch watch.Interface, err error)
+	CreateCronJob(resource, id, token string) error
 }
