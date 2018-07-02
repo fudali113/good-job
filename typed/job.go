@@ -1,9 +1,4 @@
-package goodjob
-
-type Pipeline struct {
-	Name string           `json:"name"`
-	Jobs map[string][]Job `json:"jobs"`
-}
+package typed
 
 // Job 执行 Job 的配置
 type Job struct {
@@ -17,7 +12,6 @@ type Job struct {
 	Shard ShardConfig `json:"shard"`
 	// 指定并行度
 	Parallel int       `json:"parallel"`
-	Pipeline *Pipeline `json:"pipeline"`
 }
 
 // ExecConfig 执行 job 程序的配置
@@ -42,9 +36,14 @@ type ShardConfig struct {
 	Shards []interface{} `json:"shards"`
 }
 
-type JobStorage interface {
-	Get(id string) (Job, error)
-	Create(job Job) error
-	Update(job Job) error
-	Delete(id string) error
+type JobStatus struct {
+	AdditionInfo map[string]interface{} `json:"addition_info"`
+	Pipeline *Pipeline `json:"pipeline"`
 }
+
+
+type Pipeline struct {
+	Name string           `json:"name"`
+	Jobs map[string][]Job `json:"jobs"`
+}
+

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/fudali113/good-job"
+	"github.com/fudali113/good-job/typed"
 	"gopkg.in/yaml.v2"
 	"k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -42,25 +42,28 @@ spec:
 `
 
 type K8sRuntime struct {
-	namespace   string
-	client      *kubernetes.Clientset
+	typed.K8sClient
 	jobTemplate *template.Template
 }
 
 // CreateK8sRuntime 生成一个 k8s 的运行时
 func CreateK8sRuntime(namespace string) (k8sRuntime *K8sRuntime, err error) {
-	k8sRuntime = &K8sRuntime{
-		namespace: namespace,
+	k8sClient := typed.K8sClient{
+		Namespace: namespace,
 	}
 	config, err := clientcmd.BuildConfigFromFlags("", "")
 	if err != nil {
 		return
 	}
-	k8sRuntime.client, err = kubernetes.NewForConfig(config)
+	k8sClient.Client, err = kubernetes.NewForConfig(config)
 	if err != nil {
 		return
 	}
-	k8sRuntime.jobTemplate, err = createTemplate()
+	jobTemplate, err := createTemplate()
+	k8sRuntime = &K8sRuntime{
+		jobTemplate: jobTemplate,
+		K8sClient:   k8sClient,
+	}
 	return
 }
 
@@ -81,14 +84,14 @@ func createTemplate() (tpl *template.Template, err error) {
 }
 
 func (k K8sRuntime) CreateJob(metaData map[string]interface{},
-	exec goodjob.ExecConfig) (k8sJob *v1.Job, err error) {
+	exec typed.ExecConfig) (k8sJob *v1.Job, err error) {
 	buffer := bytes.NewBufferString("")
 	metaData["config"] = exec
 	k.jobTemplate.Execute(buffer, metaData)
 	yaml.Unmarshal(buffer.Bytes(), k8sJob)
-	return k.client.BatchV1().Jobs(k.namespace).Create(k8sJob)
+	return k.Client.BatchV1().Jobs(k.Namespace).Create(k8sJob)
 }
 
 func (k K8sRuntime) WatchJob(name string) (watch watch.Interface, err error) {
-	return k.client.BatchV1().Jobs(k.namespace).Watch(metav1.ListOptions{FieldSelector: fmt.Sprintf("metadata.name=%s", name)})
+	return k.Client.BatchV1().Jobs(k.Namespace).Watch(metav1.ListOptions{FieldSelector: fmt.Sprintf("metadata.name=%s", name)})
 }
