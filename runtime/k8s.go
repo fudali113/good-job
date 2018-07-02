@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/fudali113/good-job/storage"
+	"github.com/fudali113/good-job/typed"
 	"gopkg.in/yaml.v2"
 	"k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -81,7 +81,7 @@ func createTemplate() (tpl *template.Template, err error) {
 }
 
 func (k K8sRuntime) CreateJob(metaData map[string]interface{},
-	exec storage.ExecConfig) (k8sJob *v1.Job, err error) {
+	exec typed.ExecConfig) (k8sJob *v1.Job, err error) {
 	buffer := bytes.NewBufferString("")
 	metaData["config"] = exec
 	k.jobTemplate.Execute(buffer, metaData)

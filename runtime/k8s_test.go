@@ -1,9 +1,10 @@
 package runtime
 
 import (
-	"github.com/fudali113/good-job/storage"
 	"os"
 	"testing"
+
+	"github.com/fudali113/good-job/typed"
 )
 
 func TestCreateK8sRuntime(t *testing.T) {
@@ -12,7 +13,7 @@ func TestCreateK8sRuntime(t *testing.T) {
 		t.Error(err)
 	}
 	err = tpl.Execute(os.Stdout, map[string]interface{}{
-		"config": storage.ExecConfig{
+		"config": typed.ExecConfig{
 			Image: "oo",
 			Cmd:   []string{"11", "22"},
 			Args:  []string{"11", "22"},
