@@ -1,4 +1,4 @@
-package typed
+package goodjob
 
 type Pipeline struct {
 	Name string           `json:"name"`

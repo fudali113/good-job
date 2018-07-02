@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/fudali113/good-job/typed"
+	"github.com/fudali113/good-job"
 )
 
 func TestCreateK8sRuntime(t *testing.T) {
@@ -13,7 +13,7 @@ func TestCreateK8sRuntime(t *testing.T) {
 		t.Error(err)
 	}
 	err = tpl.Execute(os.Stdout, map[string]interface{}{
-		"config": typed.ExecConfig{
+		"config": goodjob.ExecConfig{
 			Image: "oo",
 			Cmd:   []string{"11", "22"},
 			Args:  []string{"11", "22"},
