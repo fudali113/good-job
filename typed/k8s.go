@@ -1,8 +1,10 @@
 package typed
 
-import "k8s.io/client-go/kubernetes"
+import (
+	"github.com/fudali113/good-job/pkg/client/clientset/versioned"
+)
 
 type K8sClient struct {
 	Namespace string
-	Client    *kubernetes.Clientset
+	Client    *versioned.Clientset
 }

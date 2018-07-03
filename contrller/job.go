@@ -2,6 +2,7 @@ package contrller
 
 import (
 	"github.com/emicklei/go-restful"
+	"github.com/fudali113/good-job/storage"
 )
 
 type JobResource struct {
@@ -10,7 +11,7 @@ type JobResource struct {
 func (j JobResource) Register(container *restful.Container) {
 	ws := new(restful.WebService)
 	ws.
-		Path("/jobs").
+		Path("/v1/jobs").
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON)
 
@@ -32,7 +33,9 @@ func (j JobResource) Post(req *restful.Request, resp *restful.Response) {
 
 func (j JobResource) GetOne(req *restful.Request, resp *restful.Response) {
 	id := req.PathParameter("id")
-	resp.WriteEntity(id)
+	storage := storage.CreateStoage()
+	job, _ := storage.JobStorage.Get(id)
+	resp.WriteEntity(job)
 }
 
 func (j JobResource) Update(req *restful.Request, resp *restful.Response) {

@@ -9,7 +9,7 @@ type PipelineResource struct{}
 func (p PipelineResource) Register(container *restful.Container) {
 	ws := new(restful.WebService)
 	ws.
-		Path("/pipelines").
+		Path("/v1/pipelines").
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON)
 

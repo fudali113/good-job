@@ -17,8 +17,9 @@ func init() {
 }
 
 func Start(config typed.RunConfig) {
-	log.Printf("start listening on localhost:8080")
-	server := &http.Server{Addr: fmt.Sprintf(":%d", config.Server.Port), Handler: wsContainer}
+	port := fmt.Sprintf(":%d", config.Server.Port)
+	log.Printf("start listening on localhost %s", port)
+	server := &http.Server{Addr: port, Handler: wsContainer}
 	log.Fatal(server.ListenAndServe())
 }
 
