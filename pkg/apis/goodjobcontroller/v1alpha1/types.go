@@ -43,9 +43,9 @@ type JobSpec struct {
 	// 分片的配置
 	Shard ShardConfig `json:"shard"`
 	// 指定并行度
-	Parallel int       `json:"parallel"`
+	Parallel int `json:"parallel"`
 	// 该 job 所在的 pipeline
-	Pipeline string 	`json:"pipeline"`
+	Pipeline string `json:"pipeline"`
 }
 
 // ExecConfig 执行 job 程序的配置
@@ -73,8 +73,8 @@ type ShardConfig struct {
 // FooStatus is the status for a Foo resource
 type JobStatus struct {
 	AdditionInfo map[string]string `json:"addition_info"`
-	Pipeline string `json:"pipeline"`
-	Logs []string `json:"logs"`
+	Pipeline     string            `json:"pipeline"`
+	Logs         []string          `json:"logs"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -86,8 +86,6 @@ type JobList struct {
 
 	Items []Job `json:"items"`
 }
-
-
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -109,9 +107,9 @@ type PipelineSpec struct {
 
 // PipelineStatus is the status for a Pipeline resource
 type PipelineStatus struct {
-	NowJob string `json:"nowJob"`
+	NowJob       string            `json:"nowJob"`
 	AdditionInfo map[string]string `json:"addition_info"`
-	Logs []string `json:"logs"`
+	Logs         []string          `json:"logs"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

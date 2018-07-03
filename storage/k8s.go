@@ -13,7 +13,7 @@ type Job struct {
 	// +optional
 	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
-	Spec typed.Job	`json:"spec,omitempty"`
+	Spec typed.Job `json:"spec,omitempty"`
 
 	Status typed.JobStatus `json:"status,omitempty"`
 }
