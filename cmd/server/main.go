@@ -2,9 +2,12 @@ package main
 
 import (
 	"flag"
+	"log"
 
 	"github.com/fudali113/good-job/contrller"
 	"github.com/fudali113/good-job/typed"
+	"github.com/fudali113/good-job/runtime"
+	"github.com/fudali113/good-job/pkg/signals"
 )
 
 var port int
@@ -12,11 +15,18 @@ var port int
 func main() {
 	flag.Parse()
 	config := typed.RunConfig{
-		Server: typed.Server{
+		Server: typed.ServerConfig{
 			Port: port,
 		},
+		Runtime:typed.RuntimeConfig{
+
+		},
 	}
-	contrller.Start(config)
+	go runtime.Start(config.Runtime)
+	go contrller.Start(config.Server)
+	stop := signals.SetupSignalHandler()
+	<- stop
+	log.Printf("程序收到停止信号终止运行")
 }
 
 func init() {

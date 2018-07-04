@@ -21,7 +21,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	goodjobcontroller "k8s.io/sample-controller/pkg/apis/goodjobcontroller"
+	goodjobcontroller "github.com/fudali113/good-job/pkg/apis/goodjob"
 )
 
 // SchemeGroupVersion is group version used to register these objects

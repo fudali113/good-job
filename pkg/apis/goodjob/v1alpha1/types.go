@@ -121,3 +121,43 @@ type PipelineList struct {
 
 	Items []Pipeline `json:"items"`
 }
+
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// CornTrigger is a specification for a CornTrigger resource
+type CornTrigger struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   CornTriggerSpec   `json:"spec"`
+	Status CornTriggerStatus `json:"status"`
+}
+
+type CornTriggerSpec struct {
+	// 对应 k8s CornJob 的 Scheduler 字段
+	Scheduler string `json:"scheduler"`
+	// 出发资源的 Type ，可能为 pipelines 或者 jobs
+	Type string `json:"type"`
+	// 出发任务的 id
+	Id string `json:"id"`
+}
+
+type CornTriggerStatus struct {
+	JobId string
+	RunTotal int
+	SuccessTotal int
+}
+
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// CornTriggerList is a list of CornTrigger resources
+type CornTriggerList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []Pipeline `json:"items"`
+}
+

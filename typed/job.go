@@ -1,7 +1,7 @@
 package typed
 
 import (
-	k8sType "github.com/fudali113/good-job/pkg/apis/goodjobcontroller/v1alpha1"
+	k8sType "github.com/fudali113/good-job/pkg/apis/goodjob/v1alpha1"
 )
 
 // Job 执行 Job 的配置

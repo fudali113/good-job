@@ -2,10 +2,16 @@ package typed
 
 // RunConfig 启动引用的相关配置
 type RunConfig struct {
-	Server Server `json:"server"`
+	Server ServerConfig `json:"server"`
+	Runtime RuntimeConfig `json:"runtime"`
 }
 
-// Server 启动服务器的相关配置
-type Server struct {
+// ServerConfig 启动服务器的相关配置
+type ServerConfig struct {
 	Port int `json:"port"`
 }
+
+// RuntimeConfig 运行时的相关配置
+type RuntimeConfig struct {
+}
+

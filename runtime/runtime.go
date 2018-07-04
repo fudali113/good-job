@@ -24,3 +24,7 @@ type Runtime interface {
 	WatchJob(name string) (watch watch.Interface, err error)
 	CreateCronJob(resource, id, token string) error
 }
+
+func Start(config typed.RuntimeConfig)  {
+	
+}

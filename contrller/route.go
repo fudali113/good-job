@@ -16,8 +16,8 @@ func init() {
 	register(wsContainer, PipelineResource{})
 }
 
-func Start(config typed.RunConfig) {
-	port := fmt.Sprintf(":%d", config.Server.Port)
+func Start(config typed.ServerConfig) {
+	port := fmt.Sprintf(":%d", config.Port)
 	log.Printf("start listening on localhost %s", port)
 	server := &http.Server{Addr: port, Handler: wsContainer}
 	log.Fatal(server.ListenAndServe())

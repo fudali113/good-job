@@ -2,17 +2,17 @@ package storage
 
 import (
 	"github.com/fudali113/good-job/typed"
-	"github.com/fudali113/good-job/pkg/apis/goodjobcontroller/v1alpha1"
+	"github.com/fudali113/good-job/pkg/apis/goodjob/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type K8sJobStorage struct {
-	typed.K8sClient
+	*typed.Clientset
 }
 
 func (k K8sJobStorage) Get(name string) (jobSpec typed.Job, err error) {
-	job, err := k.Client.
-		SamplecontrollerV1alpha1().
+	job, err := k.
+		GoodjobV1alpha1().
 		Jobs(k.Namespace).
 		Get(name, metav1.GetOptions{})
 	jobSpec = job.Spec
@@ -20,24 +20,24 @@ func (k K8sJobStorage) Get(name string) (jobSpec typed.Job, err error) {
 }
 
 func (k K8sJobStorage) Create(jobSpec typed.Job) (err error) {
-	_, err = k.Client.
-		SamplecontrollerV1alpha1().
+	_, err = k.
+		GoodjobV1alpha1().
 		Jobs(k.Namespace).
 		Create(createJob(jobSpec, map[string]string{}))
 	return
 }
 
 func (k K8sJobStorage) Update(jobSpec typed.Job) (err error) {
-	_,err = k.Client.
-		SamplecontrollerV1alpha1().
+	_,err = k.
+		GoodjobV1alpha1().
 		Jobs(k.Namespace).
 		Update(createJob(jobSpec, map[string]string{}))
 	return
 }
 
 func (k K8sJobStorage) Delete(name string) (err error) {
-	return k.Client.
-		SamplecontrollerV1alpha1().
+	return k.
+		GoodjobV1alpha1().
 		Jobs(k.Namespace).
 		Delete(name, &metav1.DeleteOptions{})
 }
