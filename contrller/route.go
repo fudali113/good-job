@@ -1,4 +1,4 @@
-package contrller
+package api
 
 import (
 	"fmt"
