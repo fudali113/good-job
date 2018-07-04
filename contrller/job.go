@@ -25,6 +25,7 @@ func (j JobResource) Register(container *restful.Container) {
 }
 
 func (j JobResource) Get(req *restful.Request, resp *restful.Response) {
+	resp.WriteAsJson([]interface{}{})
 }
 
 func (j JobResource) Post(req *restful.Request, resp *restful.Response) {
