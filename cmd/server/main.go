@@ -4,10 +4,10 @@ import (
 	"flag"
 	"log"
 
-	"github.com/fudali113/good-job/contrller"
 	"github.com/fudali113/good-job/typed"
-	"github.com/fudali113/good-job/runtime"
+	"github.com/fudali113/good-job/api"
 	"github.com/fudali113/good-job/pkg/signals"
+	"github.com/fudali113/good-job/controller"
 )
 
 var port int
@@ -22,8 +22,8 @@ func main() {
 
 		},
 	}
-	go runtime.Start(config.Runtime)
-	go contrller.Start(config.Server)
+	go controller.Start(config.Runtime)
+	go api.Start(config.Server)
 	stop := signals.SetupSignalHandler()
 	<- stop
 	log.Printf("程序收到停止信号终止运行")

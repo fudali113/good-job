@@ -21,7 +21,7 @@ import (
 )
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
 
 // Job is a specification for a Job resource
 type Job struct {
@@ -77,7 +77,7 @@ type JobStatus struct {
 	Logs         []string          `json:"logs"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
 
 // JobList is a list of Job resources
 type JobList struct {
@@ -88,7 +88,7 @@ type JobList struct {
 }
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
 
 // Pipeline is a specification for a Pipeline resource
 type Pipeline struct {
@@ -112,7 +112,7 @@ type PipelineStatus struct {
 	Logs         []string          `json:"logs"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
 
 // PipelineList is a list of Pipeline resources
 type PipelineList struct {
@@ -124,7 +124,7 @@ type PipelineList struct {
 
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
 
 // CornTrigger is a specification for a CornTrigger resource
 type CornTrigger struct {
@@ -151,7 +151,7 @@ type CornTriggerStatus struct {
 }
 
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
 
 // CornTriggerList is a list of CornTrigger resources
 type CornTriggerList struct {
