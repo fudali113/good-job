@@ -11,16 +11,48 @@ import (
 
 	kubeinformers "k8s.io/client-go/informers"
 	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
+	"k8s.io/client-go/tools/cache"
 )
 
 var clientset typed.Clientset
 
 // Start 根据 Config 运行 controller
-func Start(config typed.RuntimeConfig)  {
-	clientset.GoodjobV1alpha1().Jobs("")
+func Start(config typed.RuntimeConfig, stop <- chan struct{})  {
 
-	informers.NewSharedInformerFactory(clientset.GoodJobClientset, 1 * time.Second)
-	kubeinformers.NewSharedInformerFactory(clientset.Clientset, 1 * time.Second)
+	goodInformers := informers.NewSharedInformerFactory(clientset.GoodJobClientset, 1 * time.Second)
+	kubeInformers := kubeinformers.NewSharedInformerFactory(clientset.Clientset, 1 * time.Second)
+
+	googjobInformer := goodInformers.Goodjob().V1alpha1().Jobs()
+
+	googjobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: func(obj interface{}) {
+
+		},
+		UpdateFunc: func(oldObj, newObj interface{}) {
+
+		},
+		DeleteFunc: func(obj interface{}) {
+
+		},
+	})
+
+	jobInformer := kubeInformers.Batch().V1().Jobs()
+
+	jobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: func(obj interface{}) {
+
+		},
+		UpdateFunc: func(oldObj, newObj interface{}) {
+
+		},
+		DeleteFunc: func(obj interface{}) {
+
+		},
+	})
+
+	goodInformers.Start(stop)
+	kubeInformers.Start(stop)
+
 }
 
 func CreateClientset(token string) *typed.Clientset {

@@ -22,9 +22,9 @@ func main() {
 
 		},
 	}
-	go controller.Start(config.Runtime)
-	go api.Start(config.Server)
 	stop := signals.SetupSignalHandler()
+	go controller.Start(config.Runtime, stop)
+	go api.Start(config.Server, stop)
 	<- stop
 	log.Printf("程序收到停止信号终止运行")
 }
