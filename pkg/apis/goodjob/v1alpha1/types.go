@@ -48,17 +48,19 @@ type ShardConfig struct {
 	// 分片的类型
 	Type string `json:"type" protobuf:"bytes,,opt,name=type"`
 	// 执行分片程序的配置
-	Template v1.PodTemplate `json:"template" protobuf:"bytes,6,opt,name=template"`
+	Template v1.PodTemplateSpec `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 手动设置分片
 	Shards []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
 }
 
 // FooStatus is the status for a Foo resource
 type JobStatus struct {
-	AdditionInfo map[string]string `json:"addition_info" protobuf:"bytes,,opt,name=addition_info"`
-	Pipeline     string            `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
-	Shards       []string          `json:"shards" protobuf:"bytes,,opt,name=shards"`
-	Logs         []string          `json:"logs" protobuf:"bytes,,opt,name=logs"`
+	Status    int      `json:"status" protobuf:"bytes,,opt,name=status"`
+	Pipeline  string   `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
+	Shards    []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
+	Successes []string `json:"successes" protobuf:"bytes,,opt,name=successes"`
+	Fails     []string `json:"fails" protobuf:"bytes,,opt,name=fails"`
+	Logs      []string `json:"logs" protobuf:"bytes,,opt,name=logs"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

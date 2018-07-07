@@ -7,9 +7,6 @@ import (
 // Job 执行 Job 的配置
 type Job = k8sType.JobSpec
 
-// ExecConfig 执行 job 程序的配置
-type ExecConfig = k8sType.ExecConfig
-
 // ShardConfig 分片程序的配置
 type ShardConfig = k8sType.ShardConfig
 

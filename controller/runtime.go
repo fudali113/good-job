@@ -25,24 +25,18 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 
 	goodInformers := informers.NewSharedInformerFactoryWithOptions(
 		clientset.GoodJobClientset,
-		1*time.Second)
+		1*time.Second,
+		informers.WithNamespace("good-job"))
 	kubeInformers := kubeinformers.NewSharedInformerFactoryWithOptions(
 		clientset.Clientset,
-		1*time.Second)
+		1*time.Second,
+		kubeinformers.WithNamespace("good-job"))
 
 	googjobInformer := goodInformers.Goodjob().V1alpha1().Jobs()
 
 	googjobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: func(obj interface{}) {
-			info, _ := json.Marshal(obj)
-			log.Printf(string(info))
-		},
-		UpdateFunc: func(oldObj, newObj interface{}) {
-			info, _ := json.Marshal(oldObj)
-			log.Printf(string(info))
-			info, _ = json.Marshal(newObj)
-			log.Printf(string(info))
-		},
+		AddFunc: addGoodJob,
+		UpdateFunc: updateGoodJob,
 		DeleteFunc: func(obj interface{}) {
 			info, _ := json.Marshal(obj)
 			log.Printf(string(info))
