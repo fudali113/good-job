@@ -16,3 +16,5 @@ type ShardConfig = k8sType.ShardConfig
 type JobStatus = k8sType.JobStatus
 
 type Pipeline = k8sType.PipelineSpec
+
+type CronTrigger = k8sType.CronTriggerSpec

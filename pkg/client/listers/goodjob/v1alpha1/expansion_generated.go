@@ -18,13 +18,13 @@ limitations under the License.
 
 package v1alpha1
 
-// CornTriggerListerExpansion allows custom methods to be added to
-// CornTriggerLister.
-type CornTriggerListerExpansion interface{}
+// CronTriggerListerExpansion allows custom methods to be added to
+// CronTriggerLister.
+type CronTriggerListerExpansion interface{}
 
-// CornTriggerNamespaceListerExpansion allows custom methods to be added to
-// CornTriggerNamespaceLister.
-type CornTriggerNamespaceListerExpansion interface{}
+// CronTriggerNamespaceListerExpansion allows custom methods to be added to
+// CronTriggerNamespaceLister.
+type CronTriggerNamespaceListerExpansion interface{}
 
 // JobListerExpansion allows custom methods to be added to
 // JobLister.

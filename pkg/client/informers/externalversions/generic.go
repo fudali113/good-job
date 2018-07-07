@@ -53,8 +53,8 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=goodjob.k8s.io, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("corntriggers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().CornTriggers().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("crontriggers"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().CronTriggers().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("jobs"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().Jobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("pipelines"):

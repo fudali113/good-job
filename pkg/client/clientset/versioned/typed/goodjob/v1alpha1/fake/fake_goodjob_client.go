@@ -28,8 +28,8 @@ type FakeGoodjobV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeGoodjobV1alpha1) CornTriggers(namespace string) v1alpha1.CornTriggerInterface {
-	return &FakeCornTriggers{c, namespace}
+func (c *FakeGoodjobV1alpha1) CronTriggers(namespace string) v1alpha1.CronTriggerInterface {
+	return &FakeCronTriggers{c, namespace}
 }
 
 func (c *FakeGoodjobV1alpha1) Jobs(namespace string) v1alpha1.JobInterface {

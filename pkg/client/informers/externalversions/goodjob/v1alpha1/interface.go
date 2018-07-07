@@ -24,8 +24,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// CornTriggers returns a CornTriggerInformer.
-	CornTriggers() CornTriggerInformer
+	// CronTriggers returns a CronTriggerInformer.
+	CronTriggers() CronTriggerInformer
 	// Jobs returns a JobInformer.
 	Jobs() JobInformer
 	// Pipelines returns a PipelineInformer.
@@ -43,9 +43,9 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// CornTriggers returns a CornTriggerInformer.
-func (v *version) CornTriggers() CornTriggerInformer {
-	return &cornTriggerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// CronTriggers returns a CronTriggerInformer.
+func (v *version) CronTriggers() CronTriggerInformer {
+	return &cronTriggerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Jobs returns a JobInformer.

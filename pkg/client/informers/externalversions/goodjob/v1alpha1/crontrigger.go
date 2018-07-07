@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// CornTriggerInformer provides access to a shared informer and lister for
-// CornTriggers.
-type CornTriggerInformer interface {
+// CronTriggerInformer provides access to a shared informer and lister for
+// CronTriggers.
+type CronTriggerInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.CornTriggerLister
+	Lister() v1alpha1.CronTriggerLister
 }
 
-type cornTriggerInformer struct {
+type cronTriggerInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewCornTriggerInformer constructs a new informer for CornTrigger type.
+// NewCronTriggerInformer constructs a new informer for CronTrigger type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewCornTriggerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredCornTriggerInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewCronTriggerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredCronTriggerInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredCornTriggerInformer constructs a new informer for CornTrigger type.
+// NewFilteredCronTriggerInformer constructs a new informer for CronTrigger type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredCornTriggerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredCronTriggerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.GoodjobV1alpha1().CornTriggers(namespace).List(options)
+				return client.GoodjobV1alpha1().CronTriggers(namespace).List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.GoodjobV1alpha1().CornTriggers(namespace).Watch(options)
+				return client.GoodjobV1alpha1().CronTriggers(namespace).Watch(options)
 			},
 		},
-		&goodjobv1alpha1.CornTrigger{},
+		&goodjobv1alpha1.CronTrigger{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *cornTriggerInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredCornTriggerInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *cronTriggerInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredCronTriggerInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *cornTriggerInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&goodjobv1alpha1.CornTrigger{}, f.defaultInformer)
+func (f *cronTriggerInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&goodjobv1alpha1.CronTrigger{}, f.defaultInformer)
 }
 
-func (f *cornTriggerInformer) Lister() v1alpha1.CornTriggerLister {
-	return v1alpha1.NewCornTriggerLister(f.Informer().GetIndexer())
+func (f *cronTriggerInformer) Lister() v1alpha1.CronTriggerLister {
+	return v1alpha1.NewCronTriggerLister(f.Informer().GetIndexer())
 }

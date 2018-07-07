@@ -27,7 +27,7 @@ import (
 
 type GoodjobV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	CornTriggersGetter
+	CronTriggersGetter
 	JobsGetter
 	PipelinesGetter
 }
@@ -37,8 +37,8 @@ type GoodjobV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *GoodjobV1alpha1Client) CornTriggers(namespace string) CornTriggerInterface {
-	return newCornTriggers(c, namespace)
+func (c *GoodjobV1alpha1Client) CronTriggers(namespace string) CronTriggerInterface {
+	return newCronTriggers(c, namespace)
 }
 
 func (c *GoodjobV1alpha1Client) Jobs(namespace string) JobInterface {

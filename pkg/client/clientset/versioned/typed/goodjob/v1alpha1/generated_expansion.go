@@ -18,7 +18,7 @@ limitations under the License.
 
 package v1alpha1
 
-type CornTriggerExpansion interface{}
+type CronTriggerExpansion interface{}
 
 type JobExpansion interface{}
 

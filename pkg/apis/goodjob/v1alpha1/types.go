@@ -21,7 +21,7 @@ import (
 )
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // Job is a specification for a Job resource
 type Job struct {
@@ -77,7 +77,7 @@ type JobStatus struct {
 	Logs         []string          `json:"logs"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // JobList is a list of Job resources
 type JobList struct {
@@ -88,7 +88,7 @@ type JobList struct {
 }
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // Pipeline is a specification for a Pipeline resource
 type Pipeline struct {
@@ -112,7 +112,7 @@ type PipelineStatus struct {
 	Logs         []string          `json:"logs"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // PipelineList is a list of Pipeline resources
 type PipelineList struct {
@@ -124,18 +124,18 @@ type PipelineList struct {
 
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// CornTrigger is a specification for a CornTrigger resource
-type CornTrigger struct {
+// CronTrigger is a specification for a CornTrigger resource
+type CronTrigger struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   CornTriggerSpec   `json:"spec"`
-	Status CornTriggerStatus `json:"status"`
+	Spec   CronTriggerSpec   `json:"spec"`
+	Status CronTriggerStatus `json:"status"`
 }
 
-type CornTriggerSpec struct {
+type CronTriggerSpec struct {
 	// 对应 k8s CornJob 的 Scheduler 字段
 	Scheduler string `json:"scheduler"`
 	// 出发资源的 Type ，可能为 pipelines 或者 jobs
@@ -144,17 +144,17 @@ type CornTriggerSpec struct {
 	Id string `json:"id"`
 }
 
-type CornTriggerStatus struct {
+type CronTriggerStatus struct {
 	JobId string
 	RunTotal int
 	SuccessTotal int
 }
 
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/controller.Object
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// CornTriggerList is a list of CornTrigger resources
-type CornTriggerList struct {
+// CronTriggerList is a list of CornTrigger resources
+type CronTriggerList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
 
