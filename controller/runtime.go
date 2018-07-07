@@ -14,15 +14,21 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"github.com/emicklei/go-restful/log"
 	"encoding/json"
+	"os"
+	"path/filepath"
 )
 
 var clientset *typed.Clientset
 
 // Start 根据 Config 运行 controller
-func Start(config typed.RuntimeConfig, stop <- chan struct{})  {
+func Start(config typed.RuntimeConfig, stop <- chan struct{}) {
 
-	goodInformers := informers.NewSharedInformerFactory(clientset.GoodJobClientset, 1 * time.Second)
-	kubeInformers := kubeinformers.NewSharedInformerFactory(clientset.Clientset, 1 * time.Second)
+	goodInformers := informers.NewSharedInformerFactoryWithOptions(
+		clientset.GoodJobClientset,
+		1 * time.Second)
+	kubeInformers := kubeinformers.NewSharedInformerFactoryWithOptions(
+		clientset.Clientset,
+		1 * time.Second)
 
 	googjobInformer := goodInformers.Goodjob().V1alpha1().Jobs()
 
@@ -101,7 +107,11 @@ func CreateGoodJobClientset(config *rest.Config, err error) (*versioned.Clientse
 }
 
 func CreteConfig(token string) (*rest.Config, error) {
-	config, err := clientcmd.BuildConfigFromFlags("", "")
+	config, err := rest.InClusterConfig()
+	if err == nil {
+		return config, err
+	}
+	config, err = clientcmd.BuildConfigFromFlags("", kubeConfigPath())
 	if err != nil {
 		return nil, err
 	}
@@ -109,5 +119,16 @@ func CreteConfig(token string) (*rest.Config, error) {
 		config.BearerToken = token
 	}
 	return config, err
+}
+
+func kubeConfigPath() string {
+	return filepath.Join(homeDir(), ".kube", "config")
+}
+
+func homeDir() string {
+	if h := os.Getenv("HOME"); h != "" {
+		return h
+	}
+	return os.Getenv("USERPROFILE") // windows
 }
 
