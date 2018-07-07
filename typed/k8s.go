@@ -11,5 +11,4 @@ type Clientset struct {
 	Namespace string
 }
 
-type GoodJobClientset =  versioned.Clientset
-
+type GoodJobClientset = versioned.Clientset

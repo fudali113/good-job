@@ -3,17 +3,17 @@ package controller
 import (
 	"time"
 
+	"github.com/fudali113/good-job/pkg/client/clientset/versioned"
 	"github.com/fudali113/good-job/typed"
-	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"github.com/fudali113/good-job/pkg/client/clientset/versioned"
+	"k8s.io/client-go/tools/clientcmd"
 
-	kubeinformers "k8s.io/client-go/informers"
-	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
-	"k8s.io/client-go/tools/cache"
-	"github.com/emicklei/go-restful/log"
 	"encoding/json"
+	"github.com/emicklei/go-restful/log"
+	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
+	kubeinformers "k8s.io/client-go/informers"
+	"k8s.io/client-go/tools/cache"
 	"os"
 	"path/filepath"
 )
@@ -21,14 +21,14 @@ import (
 var clientset *typed.Clientset
 
 // Start 根据 Config 运行 controller
-func Start(config typed.RuntimeConfig, stop <- chan struct{}) {
+func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 
 	goodInformers := informers.NewSharedInformerFactoryWithOptions(
 		clientset.GoodJobClientset,
-		1 * time.Second)
+		1*time.Second)
 	kubeInformers := kubeinformers.NewSharedInformerFactoryWithOptions(
 		clientset.Clientset,
-		1 * time.Second)
+		1*time.Second)
 
 	googjobInformer := goodInformers.Goodjob().V1alpha1().Jobs()
 
@@ -73,7 +73,7 @@ func Start(config typed.RuntimeConfig, stop <- chan struct{}) {
 
 }
 
-func init()  {
+func init() {
 	clientset = CreateClientset("")
 }
 
@@ -87,7 +87,7 @@ func CreateClientset(token string) *typed.Clientset {
 		panic(err)
 	}
 	return &typed.Clientset{
-		Clientset: clientset,
+		Clientset:        clientset,
 		GoodJobClientset: goodJobClientset,
 	}
 }
@@ -131,4 +131,3 @@ func homeDir() string {
 	}
 	return os.Getenv("USERPROFILE") // windows
 }
-

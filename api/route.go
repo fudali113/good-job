@@ -16,7 +16,7 @@ func init() {
 	register(wsContainer, PipelineResource{})
 }
 
-func Start(config typed.ServerConfig, stop <- chan struct{}) {
+func Start(config typed.ServerConfig, stop <-chan struct{}) {
 	port := fmt.Sprintf(":%d", config.Port)
 	log.Printf("start listening on localhost %s", port)
 	server := &http.Server{Addr: port, Handler: wsContainer}

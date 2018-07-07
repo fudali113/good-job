@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -28,53 +29,36 @@ type Job struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   JobSpec   `json:"spec"`
-	Status JobStatus `json:"status"`
+	Spec   JobSpec   `json:"spec,omitempty" protobuf:"bytes,,opt,name=spec"`
+	Status JobStatus `json:"status,omitempty" protobuf:"bytes,,opt,name=status"`
 }
 
 // FooSpec is the spec for a Foo resource
 type JobSpec struct {
-	// Job 的名字
-	Name string `json:"name"`
-	// 储存分片后的数据
-	Shards []string `json:"shards"`
 	// 储存执行的程序
-	Exec ExecConfig `json:"exec"`
+	Template v1.PodTemplate `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 分片的配置
-	Shard ShardConfig `json:"shard"`
+	Shard ShardConfig `json:"shard" protobuf:"bytes,,opt,name=shard"`
 	// 指定并行度
-	Parallel int `json:"parallel"`
-	// 该 job 所在的 pipeline
-	Pipeline string `json:"pipeline"`
-}
-
-// ExecConfig 执行 job 程序的配置
-type ExecConfig struct {
-	// 镜像
-	Image string `json:"image"`
-	// 启动命令
-	Cmd []string `json:"cmd"`
-	// 启动参数
-	Args []string `json:"args"`
-	// 环境变量
-	Env []string `json:"env"`
+	Parallel int `json:"parallel" protobuf:"bytes,,opt,name=parallel"`
 }
 
 // ShardConfig 分片程序的配置
 type ShardConfig struct {
 	// 分片的类型
-	Type string `json:"type"`
+	Type string `json:"type" protobuf:"bytes,,opt,name=type"`
 	// 执行分片程序的配置
-	Exec ExecConfig `json:"exec"`
+	Template v1.PodTemplate `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 手动设置分片
-	Shards []string `json:"shards"`
+	Shards []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
 }
 
 // FooStatus is the status for a Foo resource
 type JobStatus struct {
-	AdditionInfo map[string]string `json:"addition_info"`
-	Pipeline     string            `json:"pipeline"`
-	Logs         []string          `json:"logs"`
+	AdditionInfo map[string]string `json:"addition_info" protobuf:"bytes,,opt,name=addition_info"`
+	Pipeline     string            `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
+	Shards       []string          `json:"shards" protobuf:"bytes,,opt,name=shards"`
+	Logs         []string          `json:"logs" protobuf:"bytes,,opt,name=logs"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -122,7 +106,6 @@ type PipelineList struct {
 	Items []Pipeline `json:"items"`
 }
 
-
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
@@ -145,11 +128,10 @@ type CronTriggerSpec struct {
 }
 
 type CronTriggerStatus struct {
-	JobId string
-	RunTotal int
+	JobId        string
+	RunTotal     int
 	SuccessTotal int
 }
-
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
@@ -160,4 +142,3 @@ type CronTriggerList struct {
 
 	Items []Pipeline `json:"items"`
 }
-

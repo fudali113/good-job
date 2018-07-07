@@ -1,7 +1,7 @@
 package typed
 
 const (
-	JobCrdName = "GoodJob"
+	JobCrdName      = "GoodJob"
 	PipelineCrdName = "Pipeline"
-	CornTrigger = "CronTrigger"
+	CornTrigger     = "CronTrigger"
 )
