@@ -12,9 +12,11 @@ import (
 	kubeinformers "k8s.io/client-go/informers"
 	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
 	"k8s.io/client-go/tools/cache"
+	"github.com/emicklei/go-restful/log"
+	"encoding/json"
 )
 
-var clientset typed.Clientset
+var clientset *typed.Clientset
 
 // Start 根据 Config 运行 controller
 func Start(config typed.RuntimeConfig, stop <- chan struct{})  {
@@ -26,13 +28,18 @@ func Start(config typed.RuntimeConfig, stop <- chan struct{})  {
 
 	googjobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-
+			info, _ := json.Marshal(obj)
+			log.Printf(string(info))
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-
+			info, _ := json.Marshal(oldObj)
+			log.Printf(string(info))
+			info, _ = json.Marshal(newObj)
+			log.Printf(string(info))
 		},
 		DeleteFunc: func(obj interface{}) {
-
+			info, _ := json.Marshal(obj)
+			log.Printf(string(info))
 		},
 	})
 
@@ -40,13 +47,18 @@ func Start(config typed.RuntimeConfig, stop <- chan struct{})  {
 
 	jobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-
+			info, _ := json.Marshal(obj)
+			log.Printf(string(info))
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-
+			info, _ := json.Marshal(oldObj)
+			log.Printf(string(info))
+			info, _ = json.Marshal(newObj)
+			log.Printf(string(info))
 		},
 		DeleteFunc: func(obj interface{}) {
-
+			info, _ := json.Marshal(obj)
+			log.Printf(string(info))
 		},
 	})
 
@@ -55,10 +67,22 @@ func Start(config typed.RuntimeConfig, stop <- chan struct{})  {
 
 }
 
+func init()  {
+	clientset = CreateClientset("")
+}
+
 func CreateClientset(token string) *typed.Clientset {
+	clientset, err := CreateOriginClientset(CreteConfig(""))
+	if err != nil {
+		panic(err)
+	}
+	goodJobClientset, err := CreateGoodJobClientset(CreteConfig(""))
+	if err != nil {
+		panic(err)
+	}
 	return &typed.Clientset{
-		Clientset: nil,
-		GoodJobClientset: nil,
+		Clientset: clientset,
+		GoodJobClientset: goodJobClientset,
 	}
 }
 
