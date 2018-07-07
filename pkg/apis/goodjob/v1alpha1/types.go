@@ -24,27 +24,27 @@ import (
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Job is a specification for a Job resource
-type Job struct {
+// GoodJob is a specification for a GoodJob resource
+type GoodJob struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   JobSpec   `json:"spec,omitempty" protobuf:"bytes,,opt,name=spec"`
-	Status JobStatus `json:"status,omitempty" protobuf:"bytes,,opt,name=status"`
+	Spec   GoodJobSpec   `json:"spec,omitempty" protobuf:"bytes,,opt,name=spec"`
+	Status GoodJobStatus `json:"status,omitempty" protobuf:"bytes,,opt,name=status"`
 }
 
 // FooSpec is the spec for a Foo resource
-type JobSpec struct {
+type GoodJobSpec struct {
 	// 储存执行的程序
 	Template v1.PodTemplate `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 分片的配置
-	Shard ShardConfig `json:"shard" protobuf:"bytes,,opt,name=shard"`
+	Shard GoodJobShard `json:"shard" protobuf:"bytes,,opt,name=shard"`
 	// 指定并行度
 	Parallel int `json:"parallel" protobuf:"bytes,,opt,name=parallel"`
 }
 
-// ShardConfig 分片程序的配置
-type ShardConfig struct {
+// GoodJobShard 分片程序的配置
+type GoodJobShard struct {
 	// 分片的类型
 	Type string `json:"type" protobuf:"bytes,,opt,name=type"`
 	// 执行分片程序的配置
@@ -54,7 +54,7 @@ type ShardConfig struct {
 }
 
 // FooStatus is the status for a Foo resource
-type JobStatus struct {
+type GoodJobStatus struct {
 	Status    int      `json:"status" protobuf:"bytes,,opt,name=status"`
 	Pipeline  string   `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
 	Shards    []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
@@ -65,12 +65,12 @@ type JobStatus struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// JobList is a list of Job resources
-type JobList struct {
+// GoodJobList is a list of GoodJob resources
+type GoodJobList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
 
-	Items []Job `json:"items"`
+	Items []GoodJob `json:"items"`
 }
 
 // +genclient
@@ -87,8 +87,8 @@ type Pipeline struct {
 
 // PipelineSpec is the spec for a Pipeline resource
 type PipelineSpec struct {
-	Name string           `json:"name"`
-	Jobs map[string][]Job `json:"jobs"`
+	Name string               `json:"name"`
+	Jobs map[string][]GoodJob `json:"jobs"`
 }
 
 // PipelineStatus is the status for a Pipeline resource

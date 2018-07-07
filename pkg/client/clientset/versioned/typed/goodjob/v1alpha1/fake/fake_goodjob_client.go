@@ -32,8 +32,8 @@ func (c *FakeGoodjobV1alpha1) CronTriggers(namespace string) v1alpha1.CronTrigge
 	return &FakeCronTriggers{c, namespace}
 }
 
-func (c *FakeGoodjobV1alpha1) Jobs(namespace string) v1alpha1.JobInterface {
-	return &FakeJobs{c, namespace}
+func (c *FakeGoodjobV1alpha1) GoodJobs(namespace string) v1alpha1.GoodJobInterface {
+	return &FakeGoodJobs{c, namespace}
 }
 
 func (c *FakeGoodjobV1alpha1) Pipelines(namespace string) v1alpha1.PipelineInterface {

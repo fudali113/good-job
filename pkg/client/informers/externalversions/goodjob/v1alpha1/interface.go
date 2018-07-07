@@ -26,8 +26,8 @@ import (
 type Interface interface {
 	// CronTriggers returns a CronTriggerInformer.
 	CronTriggers() CronTriggerInformer
-	// Jobs returns a JobInformer.
-	Jobs() JobInformer
+	// GoodJobs returns a GoodJobInformer.
+	GoodJobs() GoodJobInformer
 	// Pipelines returns a PipelineInformer.
 	Pipelines() PipelineInformer
 }
@@ -48,9 +48,9 @@ func (v *version) CronTriggers() CronTriggerInformer {
 	return &cronTriggerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// Jobs returns a JobInformer.
-func (v *version) Jobs() JobInformer {
-	return &jobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// GoodJobs returns a GoodJobInformer.
+func (v *version) GoodJobs() GoodJobInformer {
+	return &goodJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Pipelines returns a PipelineInformer.

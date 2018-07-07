@@ -55,8 +55,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 	// Group=goodjob.k8s.io, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithResource("crontriggers"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().CronTriggers().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("jobs"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().Jobs().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("goodjobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().GoodJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("pipelines"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Goodjob().V1alpha1().Pipelines().Informer()}, nil
 

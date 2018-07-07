@@ -4,13 +4,13 @@ import (
 	k8sType "github.com/fudali113/good-job/pkg/apis/goodjob/v1alpha1"
 )
 
-// Job 执行 Job 的配置
-type Job = k8sType.JobSpec
+// GoodJob 执行 GoodJob 的配置
+type Job = k8sType.GoodJobSpec
 
-// ShardConfig 分片程序的配置
-type ShardConfig = k8sType.ShardConfig
+// GoodJobShard 分片程序的配置
+type ShardConfig = k8sType.GoodJobShard
 
-type JobStatus = k8sType.JobStatus
+type JobStatus = k8sType.GoodJobStatus
 
 type Pipeline = k8sType.PipelineSpec
 

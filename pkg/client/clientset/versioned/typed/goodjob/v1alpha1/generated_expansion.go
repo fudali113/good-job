@@ -20,6 +20,6 @@ package v1alpha1
 
 type CronTriggerExpansion interface{}
 
-type JobExpansion interface{}
+type GoodJobExpansion interface{}
 
 type PipelineExpansion interface{}

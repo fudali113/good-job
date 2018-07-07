@@ -32,7 +32,7 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 		1*time.Second,
 		kubeinformers.WithNamespace("good-job"))
 
-	googjobInformer := goodInformers.Goodjob().V1alpha1().Jobs()
+	googjobInformer := goodInformers.Goodjob().V1alpha1().GoodJobs()
 
 	googjobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: addGoodJob,

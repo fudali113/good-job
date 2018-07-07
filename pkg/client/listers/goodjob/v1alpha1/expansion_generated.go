@@ -26,13 +26,13 @@ type CronTriggerListerExpansion interface{}
 // CronTriggerNamespaceLister.
 type CronTriggerNamespaceListerExpansion interface{}
 
-// JobListerExpansion allows custom methods to be added to
-// JobLister.
-type JobListerExpansion interface{}
+// GoodJobListerExpansion allows custom methods to be added to
+// GoodJobLister.
+type GoodJobListerExpansion interface{}
 
-// JobNamespaceListerExpansion allows custom methods to be added to
-// JobNamespaceLister.
-type JobNamespaceListerExpansion interface{}
+// GoodJobNamespaceListerExpansion allows custom methods to be added to
+// GoodJobNamespaceLister.
+type GoodJobNamespaceListerExpansion interface{}
 
 // PipelineListerExpansion allows custom methods to be added to
 // PipelineLister.
