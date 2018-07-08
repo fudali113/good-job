@@ -44,13 +44,16 @@ func updateGoodJob(oldObj, newObj interface{})  {
 			goodjob := newGoodjob.DeepCopy()
 			goodjob.Status.Status = typed.ShardSuccess
 			goodjob.Status.Shards = shard.Shards
-			goodjob, err := clientset.GoodjobV1alpha1().GoodJobs(newGoodjob.Namespace).Get(goodjob.Name, metav1.GetOptions{})
+			// FIXME
+			// 本来应该使用 UpdateStatus 方法进行更新状态
+			// 1.10 才开始支持 CRD 定义 subresource, 如果在
+			// https://v1-10.docs.kubernetes.io/docs/tasks/access-kubernetes-api/extend-api-custom-resource-definitions/#status-subresource
+			// 文档对比
+			// https://v1-10.docs.kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#advanced-features-and-flexibility
+			// https://v1-9.docs.kubernetes.io/docs/concepts/api-extension/custom-resources/#advanced-features-and-flexibility
+			_, err := clientset.GoodjobV1alpha1().GoodJobs(newGoodjob.Namespace).Update(goodjob)
 			if err != nil {
-				log.Printf("更新 GoodJob 状态失败, error: %s", err.Error())
-			}
-			_, err = clientset.GoodjobV1alpha1().GoodJobs(newGoodjob.Namespace).UpdateStatus(goodjob)
-			if err != nil {
-				log.Printf("更新 GoodJob 状态失败, error: %s", err.Error())
+				log.Printf("update GoodJob status error, error: %s", err.Error())
 			}
 		case "exec":
 			goodjob := newGoodjob.DeepCopy()
