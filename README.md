@@ -21,18 +21,25 @@ metadata:
     name: test
     namespace: good-job
 spec:
-    exec:                   # 实际运行任务的配置
+    template:                   #  参照 PodTemplate
+        name: "test"
         image: "test"
         cmd: ["test"]
         args: []
     shard:
         type: config        # config or exec
         shards: []          # if type == config
-        exec:               # if type == exec ; 我们应该在程序中调用相关的 api 来进行更新改 job 的分片信息  (待优化，应该劲量与应用解耦)
+        template:           # if type == exec ; 我们应该在程序中调用相关的 api 来进行更新改 job 的分片信息  (待优化，应该劲量与应用解耦)
+            name: test
             image: "test"
             cmd: ["test"]
             args: []
     parallel: 2             # 并行度, 即最多可以同时运行多少个分片，大于分片数实际取值会是分片数
+status:
+
 ```
+
+PodTemplate 参见 [PodTemplate](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#podtemplatespec-v1-core)
+
 ### 实现原理
 利用 CRD 创建 GoodJob 的资源，监听 GoodJob 资源的添加，将 GoodJob 拆分成具体的 Job 并执行，监听 Job 执行的情况并更新 GoodJob 的状态
