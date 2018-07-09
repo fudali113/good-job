@@ -12,11 +12,11 @@ import (
 	"encoding/json"
 	"github.com/emicklei/go-restful/log"
 	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
+	batchv1 "k8s.io/api/batch/v1"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
 	"os"
 	"path/filepath"
-	batchv1 "k8s.io/api/batch/v1"
 )
 
 var clientset *typed.Clientset

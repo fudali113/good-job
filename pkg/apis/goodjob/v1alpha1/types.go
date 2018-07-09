@@ -43,7 +43,6 @@ type GoodJobList struct {
 	Items []GoodJob `json:"items"`
 }
 
-
 // FooSpec is the spec for a Foo resource
 type GoodJobSpec struct {
 	// 储存执行的程序
@@ -66,13 +65,12 @@ type GoodJobShard struct {
 
 // FooStatus is the status for a Foo resource
 type GoodJobStatus struct {
-	Status    int      `json:"status" protobuf:"bytes,,opt,name=status"`
-	Pipeline  string   `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
-	Shards    []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
+	Status        int               `json:"status" protobuf:"bytes,,opt,name=status"`
+	Pipeline      string            `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
+	Shards        []string          `json:"shards" protobuf:"bytes,,opt,name=shards"`
 	ShardStatuses map[string]string `json:"shardStatuses" protobuf:"bytes,,opt,name=shardStatuses"`
-	Logs      []string `json:"logs" protobuf:"bytes,,opt,name=logs"`
+	Logs          []string          `json:"logs" protobuf:"bytes,,opt,name=logs"`
 }
-
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -108,7 +106,6 @@ type PipelineStatus struct {
 	AdditionInfo map[string]string `json:"addition_info"`
 	Logs         []string          `json:"logs"`
 }
-
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
