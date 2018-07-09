@@ -226,15 +226,12 @@ func (in *GoodJobStatus) DeepCopyInto(out *GoodJobStatus) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
-	if in.Successes != nil {
-		in, out := &in.Successes, &out.Successes
-		*out = make([]string, len(*in))
-		copy(*out, *in)
-	}
-	if in.Fails != nil {
-		in, out := &in.Fails, &out.Fails
-		*out = make([]string, len(*in))
-		copy(*out, *in)
+	if in.ShardStatuses != nil {
+		in, out := &in.ShardStatuses, &out.ShardStatuses
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	if in.Logs != nil {
 		in, out := &in.Logs, &out.Logs

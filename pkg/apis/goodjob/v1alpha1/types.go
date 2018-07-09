@@ -36,7 +36,7 @@ type GoodJob struct {
 // FooSpec is the spec for a Foo resource
 type GoodJobSpec struct {
 	// 储存执行的程序
-	Template v1.PodTemplate `json:"template" protobuf:"bytes,6,opt,name=template"`
+	Template v1.PodTemplateSpec `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 分片的配置
 	Shard GoodJobShard `json:"shard" protobuf:"bytes,,opt,name=shard"`
 	// 指定并行度
@@ -58,8 +58,7 @@ type GoodJobStatus struct {
 	Status    int      `json:"status" protobuf:"bytes,,opt,name=status"`
 	Pipeline  string   `json:"pipeline" protobuf:"bytes,,opt,name=pipeline"`
 	Shards    []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
-	Successes []string `json:"successes" protobuf:"bytes,,opt,name=successes"`
-	Fails     []string `json:"fails" protobuf:"bytes,,opt,name=fails"`
+	ShardStatuses map[string]string `json:"shardStatuses" protobuf:"bytes,,opt,name=shardStatuses"`
 	Logs      []string `json:"logs" protobuf:"bytes,,opt,name=logs"`
 }
 

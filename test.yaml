@@ -34,6 +34,12 @@ spec:
   template:
     metadata:
       name: test
+    spec:
+      containers:
+      - image: busybox
+        name: test
+        command: ["env"]
+      restartPolicy: OnFailure
 status:
   status: 1
 #--

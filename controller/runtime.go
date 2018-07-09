@@ -16,6 +16,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"os"
 	"path/filepath"
+	batchv1 "k8s.io/api/batch/v1"
 )
 
 var clientset *typed.Clientset
@@ -35,7 +36,7 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 	googjobInformer := goodInformers.Goodjob().V1alpha1().GoodJobs()
 
 	googjobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: addGoodJob,
+		AddFunc:    addGoodJob,
 		UpdateFunc: updateGoodJob,
 		DeleteFunc: func(obj interface{}) {
 			info, _ := json.Marshal(obj)
@@ -51,6 +52,13 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 			log.Printf(string(info))
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
+			oldGoodjob := oldObj.(*batchv1.Job)
+			newGoodjob := newObj.(*batchv1.Job)
+			if newGoodjob.ResourceVersion == oldGoodjob.ResourceVersion {
+				// Periodic resync will send update events for all known Deployments.
+				// Two different versions of the same Deployment will always have different RVs.
+				return
+			}
 			info, _ := json.Marshal(oldObj)
 			log.Printf(string(info))
 			info, _ = json.Marshal(newObj)
