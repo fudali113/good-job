@@ -20,10 +20,11 @@ import (
 )
 
 const (
-	GoodJobNameLabel  = goodjob.GroupName + "/goodJobName"
-	PipelineNameLabel = goodjob.GroupName + "/pipelineName"
-	ShardLabel        = goodjob.GroupName + "/shard"
-	ShardIndexLabel   = goodjob.GroupName + "/shardIndex"
+	GoodJobNameLabel       = goodjob.GroupName + "/goodJobName"
+	PipelineNameLabel      = goodjob.GroupName + "/pipelineName"
+	ShardLabel             = goodjob.GroupName + "/shard"
+	ShardIndexLabel        = goodjob.GroupName + "/shardIndex"
+	ShardMatchPatternLabel = goodjob.GroupName + "/shardMatchPattern"
 )
 
 var clientset *typed.Clientset

@@ -7,7 +7,6 @@ import (
 	"github.com/fudali113/good-job/typed"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"strconv"
@@ -27,11 +26,6 @@ func updateGoodJob(oldObj, newObj interface{}) {
 		return
 	}
 
-	info, _ := json.Marshal(oldObj)
-	log.Printf("old ---> " + string(info))
-	info, _ = json.Marshal(newObj)
-	log.Printf("new ---> " + string(info))
-
 	oldStatus := oldGoodjob.Status.Status
 	newStatus := newGoodjob.Status.Status
 	if oldStatus >= newStatus {
@@ -47,10 +41,10 @@ func updateGoodJob(oldObj, newObj interface{}) {
 			goodjob.Status.Shards = shard.Shards
 		case "exec":
 			goodjob := newGoodjob.DeepCopy()
-			job := newJob(goodjob.Spec.Shard.Template, goodjob, "", -1)
+			job := newJob(goodjob.Spec.Shard.Template, goodjob, "", 0)
 			_, err := clientset.BatchV1().Jobs(newGoodjob.Namespace).Create(job)
 			if err != nil {
-				log.Printf("创建 GoodJob 失败, error: %s", err.Error())
+				log.Printf("创建 Shard Job 失败, error: %s", err.Error())
 				goodjob.Status.Status = typed.ShardFail
 			} else {
 				goodjob.Status.Status = typed.Sharding
@@ -88,12 +82,12 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 			containers[i] = c
 		}
 
-		job := newJob(podTemplate, goodjob, shard, i)
+		job := newJob(podTemplate, goodjob, shard, i+1)
 
 		// 在创建 job 前检查是否状态为可重新执行
 		nowGoodJob, err := clientset.GoodjobV1alpha1().GoodJobs(goodjob.Namespace).Get(goodjob.Name, metav1.GetOptions{})
 		if err != nil {
-			log.Printf(err.Error())
+			log.Printf("获取 GoodJob 失败， error: %s", err.Error())
 		}
 		if _, ok := nowGoodJob.Status.ShardStatuses[shard]; ok {
 			continue
@@ -101,10 +95,7 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 
 		_, err = clientset.BatchV1().Jobs(goodJob.Namespace).Create(job)
 		if err != nil {
-			if errors.IsAlreadyExists(err) {
-				_, err = clientset.BatchV1().Jobs(goodJob.Namespace).Update(job)
-			}
-			log.Printf(err.Error())
+			log.Printf("创建 Job 失败, error: %s", err.Error())
 		}
 		goodjob.Status.ShardStatuses[shard] = "create"
 		clientset.GoodjobV1alpha1().GoodJobs(goodjob.Namespace).Update(goodjob)
@@ -116,14 +107,20 @@ func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard string,
 	labels := map[string]string{
 		GoodJobNameLabel:  job.Name,
 		PipelineNameLabel: job.Status.Pipeline,
-		ShardLabel:        shard,
 		ShardIndexLabel:   strconv.Itoa(shardIndex),
+	}
+	annotations := map[string]string{
+		ShardLabel: shard,
+	}
+	if shardIndex == 0 {
+		annotations[ShardMatchPatternLabel] = job.Spec.Shard.MatchPattern
 	}
 	return &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("good-job-%s-%s", job.Name, fmt.Sprintf("shard-%d", shardIndex)),
-			Namespace: job.Namespace,
-			Labels:    labels,
+			Name:        fmt.Sprintf("good-job-%s-%s", job.Name, fmt.Sprintf("shard-%d", shardIndex)),
+			Namespace:   job.Namespace,
+			Labels:      labels,
+			Annotations: annotations,
 		},
 		Spec: batchv1.JobSpec{
 			Template: podTemplate,
