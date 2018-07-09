@@ -56,13 +56,13 @@ type GoodJobSpec struct {
 // GoodJobShard 分片程序的配置
 type GoodJobShard struct {
 	// 分片的类型
-	Type string `json:"type" protobuf:"bytes,,opt,name=type"`
+	Type string 				`json:"type" protobuf:"bytes,,opt,name=type"`
 	// 执行分片程序的配置
 	Template v1.PodTemplateSpec `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 匹配日志的正则表达式
-	MatchPattern string
+	MatchPattern string 		`json:"matchPattern" protobuf:"bytes,6,opt,name=matchPattern"`
 	// 手动设置分片
-	Shards []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
+	Shards []string 			`json:"shards" protobuf:"bytes,,opt,name=shards"`
 }
 
 // FooStatus is the status for a Foo resource

@@ -27,6 +27,7 @@ spec:
         cmd: ["test"]
         args: []
     shard:
+        matchPattern: ""    # 正则表达式， 默认 `GOOD_JOB_SHARDS[\s\S\w\W]+`
         type: config        # config or exec
         shards: []          # if type == config
         template:           # if type == exec ; 我们应该在程序中调用相关的 api 来进行更新改 job 的分片信息  (待优化，应该劲量与应用解耦)
@@ -40,6 +41,11 @@ status:
 ```
 
 PodTemplate 参见 [PodTemplate](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#podtemplatespec-v1-core)
+
+#### shard type exec
+
+当你使用 type : exec 的 shard 配置的时候，程序将会从你的 shard 容器执行日志当中去需要符合规则的条目并转换为 shard ; 你可以自己配置 `matchPattern`
+正则表达式来从 shard 容器日志中匹配相关的日志条目，日志条目以 `\n` 进行切分；(因为我们会读取全部日志并进行匹配，所以建议 shard 容器日志行数不要太大)
 
 ### 实现原理
 利用 CRD 创建 GoodJob 的资源，监听 GoodJob 资源的添加，将 GoodJob 拆分成具体的 Job 并执行，监听 Job 执行的情况并更新 GoodJob 的状态
