@@ -10,6 +10,8 @@ import (
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
+	"strconv"
+	"k8s.io/apimachinery/pkg/api/errors"
 )
 
 func addGoodJob(obj interface{}) {
@@ -46,7 +48,7 @@ func updateGoodJob(oldObj, newObj interface{}) {
 			goodjob.Status.Shards = shard.Shards
 		case "exec":
 			goodjob := newGoodjob.DeepCopy()
-			job := newJob(goodjob.Spec.Shard.Template, goodjob, "")
+			job := newJob(goodjob.Spec.Shard.Template, goodjob, "", -1)
 			_, err := clientset.BatchV1().Jobs(newGoodjob.Namespace).Create(job)
 			if err != nil {
 				log.Printf("创建 GoodJob 失败, error: %s", err.Error())
@@ -74,7 +76,7 @@ func updateGoodJob(oldObj, newObj interface{}) {
 }
 
 func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
-	for _, shard := range goodJob.Status.Shards {
+	for i, shard := range goodJob.Status.Shards {
 		goodjob := goodJob.DeepCopy()
 		podTemplate := goodjob.Spec.Template
 		containers := podTemplate.Spec.Containers
@@ -87,7 +89,7 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 			containers[i] = c
 		}
 
-		job := newJob(podTemplate, goodjob, shard)
+		job := newJob(podTemplate, goodjob, shard, i)
 
 		// 在创建 job 前检查是否状态为可重新执行
 		nowGoodJob, err := clientset.GoodjobV1alpha1().GoodJobs(goodjob.Namespace).Get(goodjob.Name, metav1.GetOptions{})
@@ -100,6 +102,9 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 
 		_, err = clientset.BatchV1().Jobs(goodJob.Namespace).Create(job)
 		if err != nil {
+			if errors.IsAlreadyExists(err) {
+				_, err = clientset.BatchV1().Jobs(goodJob.Namespace).Update(job)
+			}
 			log.Printf(err.Error())
 		}
 		goodjob.Status.ShardStatuses[shard] = "create"
@@ -108,22 +113,16 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 	return nil
 }
 
-func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard string) *batchv1.Job {
-	action := func(shard string) string {
-		if shard == "" {
-			return "shard"
-		}
-		return "run"
-	}(shard)
+func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard string, shardIndex int) *batchv1.Job {
 	labels := map[string]string{
 		goodjob.GroupName + "/goodJobName":  job.Name,
 		goodjob.GroupName + "/pipelineName": job.Status.Pipeline,
-		goodjob.GroupName + "/action":       action,
 		goodjob.GroupName + "/shard":        shard,
+		goodjob.GroupName + "/shardIndex":   strconv.Itoa(shardIndex),
 	}
 	return &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("good-job-%s-%s-%s", job.Name, action, shard),
+			Name:      fmt.Sprintf("good-job-%s-%s", job.Name, fmt.Sprintf("shard-%d", shardIndex)),
 			Namespace: job.Namespace,
 			Labels:    labels,
 		},
