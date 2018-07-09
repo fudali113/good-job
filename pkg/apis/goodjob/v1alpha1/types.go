@@ -33,6 +33,17 @@ type GoodJob struct {
 	Status GoodJobStatus `json:"status,omitempty" protobuf:"bytes,,opt,name=status"`
 }
 
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// GoodJobList is a list of GoodJob resources
+type GoodJobList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []GoodJob `json:"items"`
+}
+
+
 // FooSpec is the spec for a Foo resource
 type GoodJobSpec struct {
 	// 储存执行的程序
@@ -62,15 +73,6 @@ type GoodJobStatus struct {
 	Logs      []string `json:"logs" protobuf:"bytes,,opt,name=logs"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// GoodJobList is a list of GoodJob resources
-type GoodJobList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata"`
-
-	Items []GoodJob `json:"items"`
-}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -82,6 +84,16 @@ type Pipeline struct {
 
 	Spec   PipelineSpec   `json:"spec"`
 	Status PipelineStatus `json:"status"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// PipelineList is a list of Pipeline resources
+type PipelineList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []Pipeline `json:"items"`
 }
 
 // PipelineSpec is the spec for a Pipeline resource
@@ -97,15 +109,6 @@ type PipelineStatus struct {
 	Logs         []string          `json:"logs"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// PipelineList is a list of Pipeline resources
-type PipelineList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata"`
-
-	Items []Pipeline `json:"items"`
-}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -117,6 +120,16 @@ type CronTrigger struct {
 
 	Spec   CronTriggerSpec   `json:"spec"`
 	Status CronTriggerStatus `json:"status"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// CronTriggerList is a list of CornTrigger resources
+type CronTriggerList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []Pipeline `json:"items"`
 }
 
 type CronTriggerSpec struct {
@@ -132,14 +145,4 @@ type CronTriggerStatus struct {
 	JobId        string
 	RunTotal     int
 	SuccessTotal int
-}
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// CronTriggerList is a list of CornTrigger resources
-type CronTriggerList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata"`
-
-	Items []Pipeline `json:"items"`
 }

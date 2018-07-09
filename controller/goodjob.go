@@ -46,7 +46,7 @@ func updateGoodJob(oldObj, newObj interface{}) {
 			goodjob.Status.Shards = shard.Shards
 		case "exec":
 			goodjob := newGoodjob.DeepCopy()
-			job := newJob(goodjob.Spec.Shard.Template, goodjob, true)
+			job := newJob(goodjob.Spec.Shard.Template, goodjob, "")
 			_, err := clientset.BatchV1().Jobs(newGoodjob.Namespace).Create(job)
 			if err != nil {
 				log.Printf("创建 GoodJob 失败, error: %s", err.Error())
@@ -87,7 +87,7 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 			containers[i] = c
 		}
 
-		job := newJob(podTemplate, goodjob, false)
+		job := newJob(podTemplate, goodjob, shard)
 
 		// 在创建 job 前检查是否状态为可重新执行
 		nowGoodJob, err := clientset.GoodjobV1alpha1().GoodJobs(goodjob.Namespace).Get(goodjob.Name, metav1.GetOptions{})
@@ -98,7 +98,6 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 			continue
 		}
 
-		job.Name = job.Name + "-" + shard
 		_, err = clientset.BatchV1().Jobs(goodJob.Namespace).Create(job)
 		if err != nil {
 			log.Printf(err.Error())
@@ -109,9 +108,9 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 	return nil
 }
 
-func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard bool) *batchv1.Job {
-	action := func(shard bool) string {
-		if shard {
+func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard string) *batchv1.Job {
+	action := func(shard string) string {
+		if shard == "" {
 			return "shard"
 		}
 		return "run"
@@ -120,10 +119,11 @@ func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard bool) *
 		goodjob.GroupName + "/goodJobName":  job.Name,
 		goodjob.GroupName + "/pipelineName": job.Status.Pipeline,
 		goodjob.GroupName + "/action":       action,
+		goodjob.GroupName + "/shard":        shard,
 	}
 	return &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("good-job-%s-%s", job.Name, action),
+			Name:      fmt.Sprintf("good-job-%s-%s-%s", job.Name, action, shard),
 			Namespace: job.Namespace,
 			Labels:    labels,
 		},
