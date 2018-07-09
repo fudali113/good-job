@@ -3,15 +3,14 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fudali113/good-job/pkg/apis/goodjob"
 	"github.com/fudali113/good-job/pkg/apis/goodjob/v1alpha1"
 	"github.com/fudali113/good-job/typed"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"strconv"
-	"k8s.io/apimachinery/pkg/api/errors"
 )
 
 func addGoodJob(obj interface{}) {
@@ -115,10 +114,10 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 
 func newJob(podTemplate v1.PodTemplateSpec, job *v1alpha1.GoodJob, shard string, shardIndex int) *batchv1.Job {
 	labels := map[string]string{
-		goodjob.GroupName + "/goodJobName":  job.Name,
-		goodjob.GroupName + "/pipelineName": job.Status.Pipeline,
-		goodjob.GroupName + "/shard":        shard,
-		goodjob.GroupName + "/shardIndex":   strconv.Itoa(shardIndex),
+		GoodJobNameLabel:  job.Name,
+		PipelineNameLabel: job.Status.Pipeline,
+		ShardLabel:        shard,
+		ShardIndexLabel:   strconv.Itoa(shardIndex),
 	}
 	return &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{

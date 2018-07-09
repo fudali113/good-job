@@ -11,12 +11,19 @@ import (
 
 	"encoding/json"
 	"github.com/emicklei/go-restful/log"
+	"github.com/fudali113/good-job/pkg/apis/goodjob"
 	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
-	batchv1 "k8s.io/api/batch/v1"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
 	"os"
 	"path/filepath"
+)
+
+const (
+	GoodJobNameLabel  = goodjob.GroupName + "/goodJobName"
+	PipelineNameLabel = goodjob.GroupName + "/pipelineName"
+	ShardLabel        = goodjob.GroupName + "/shard"
+	ShardIndexLabel   = goodjob.GroupName + "/shardIndex"
 )
 
 var clientset *typed.Clientset
@@ -51,19 +58,7 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 			info, _ := json.Marshal(obj)
 			log.Printf(string(info))
 		},
-		UpdateFunc: func(oldObj, newObj interface{}) {
-			oldGoodjob := oldObj.(*batchv1.Job)
-			newGoodjob := newObj.(*batchv1.Job)
-			if newGoodjob.ResourceVersion == oldGoodjob.ResourceVersion {
-				// Periodic resync will send update events for all known Deployments.
-				// Two different versions of the same Deployment will always have different RVs.
-				return
-			}
-			info, _ := json.Marshal(oldObj)
-			log.Printf(string(info))
-			info, _ = json.Marshal(newObj)
-			log.Printf(string(info))
-		},
+		UpdateFunc: jobStatusUpdate,
 		DeleteFunc: func(obj interface{}) {
 			info, _ := json.Marshal(obj)
 			log.Printf(string(info))
