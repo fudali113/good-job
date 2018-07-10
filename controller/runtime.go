@@ -10,13 +10,13 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	"encoding/json"
-	"github.com/emicklei/go-restful/log"
 	"github.com/fudali113/good-job/pkg/apis/goodjob"
 	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
 	"os"
 	"path/filepath"
+	"github.com/golang/glog"
 )
 
 const (
@@ -48,7 +48,7 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 		UpdateFunc: updateGoodJob,
 		DeleteFunc: func(obj interface{}) {
 			info, _ := json.Marshal(obj)
-			log.Printf(string(info))
+			glog.Info(string(info))
 		},
 	})
 
@@ -57,12 +57,12 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 	jobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			info, _ := json.Marshal(obj)
-			log.Printf(string(info))
+			glog.V(1).Info(string(info))
 		},
 		UpdateFunc: jobStatusUpdate,
 		DeleteFunc: func(obj interface{}) {
 			info, _ := json.Marshal(obj)
-			log.Printf(string(info))
+			glog.Info(string(info))
 		},
 	})
 

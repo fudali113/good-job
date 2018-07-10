@@ -1,20 +1,23 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/fudali113/good-job/pkg/apis/goodjob/v1alpha1"
-	"github.com/fudali113/good-job/typed"
-	batchv1 "k8s.io/api/batch/v1"
-	"k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"log"
 	"strconv"
+	"encoding/json"
+
+
+	"github.com/golang/glog"
+	"github.com/fudali113/good-job/typed"
+	"github.com/fudali113/good-job/pkg/apis/goodjob/v1alpha1"
+	"k8s.io/api/core/v1"
+
+	batchv1 "k8s.io/api/batch/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func addGoodJob(obj interface{}) {
 	info, _ := json.Marshal(obj)
-	log.Printf("create ---> " + string(info))
+	glog.V(1).Info("create ---> " + string(info))
 }
 
 func updateGoodJob(oldObj, newObj interface{}) {
@@ -44,7 +47,7 @@ func updateGoodJob(oldObj, newObj interface{}) {
 			job := newJob(goodjob.Spec.Shard.Template, goodjob, "", 0)
 			_, err := clientset.BatchV1().Jobs(newGoodjob.Namespace).Create(job)
 			if err != nil {
-				log.Printf("创建 Shard Job 失败, error: %s", err.Error())
+				glog.Errorf("创建 Shard Job 失败, error: %s", err.Error())
 				goodjob.Status.Status = typed.ShardFail
 			} else {
 				goodjob.Status.Status = typed.Sharding
@@ -61,7 +64,7 @@ func updateGoodJob(oldObj, newObj interface{}) {
 		// https://v1-9.docs.kubernetes.io/docs/concepts/api-extension/custom-resources/#advanced-features-and-flexibility
 		_, err := clientset.GoodjobV1alpha1().GoodJobs(newGoodjob.Namespace).Update(goodjob)
 		if err != nil {
-			log.Printf("update GoodJob status error, error: %s", err.Error())
+			glog.Errorf("update GoodJob status error, error: %s", err.Error())
 		}
 	case typed.ShardSuccess:
 		dealShardSuccess(newGoodjob)
@@ -87,7 +90,7 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 		// 在创建 job 前检查是否状态为可重新执行
 		nowGoodJob, err := clientset.GoodjobV1alpha1().GoodJobs(goodjob.Namespace).Get(goodjob.Name, metav1.GetOptions{})
 		if err != nil {
-			log.Printf("获取 GoodJob 失败， error: %s", err.Error())
+			glog.Errorf("获取 GoodJob 失败， error: %s", err.Error())
 		}
 		if _, ok := nowGoodJob.Status.ShardStatuses[shard]; ok {
 			continue
@@ -95,7 +98,7 @@ func dealShardSuccess(goodJob *v1alpha1.GoodJob) error {
 
 		_, err = clientset.BatchV1().Jobs(goodJob.Namespace).Create(job)
 		if err != nil {
-			log.Printf("创建 Job 失败, error: %s", err.Error())
+			glog.Errorf("创建 Job 失败, error: %s", err.Error())
 		}
 		goodjob.Status.ShardStatuses[shard] = "create"
 		clientset.GoodjobV1alpha1().GoodJobs(goodjob.Namespace).Update(goodjob)

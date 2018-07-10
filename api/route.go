@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/emicklei/go-restful"
 	"github.com/fudali113/good-job/typed"
+	"github.com/golang/glog"
 )
 
 var wsContainer = restful.NewContainer()
@@ -18,9 +18,9 @@ func init() {
 
 func Start(config typed.ServerConfig, stop <-chan struct{}) {
 	port := fmt.Sprintf(":%d", config.Port)
-	log.Printf("start listening on localhost %s", port)
+	glog.Infof("start listening on localhost %s", port)
 	server := &http.Server{Addr: port, Handler: wsContainer}
-	log.Fatal(server.ListenAndServe())
+	glog.Error(server.ListenAndServe())
 }
 
 func register(container *restful.Container, register RouteRegister) {
