@@ -18,4 +18,9 @@ package goodjob
 
 const (
 	GroupName = "goodjob.k8s.io"
+	Version = "v1alpha1"
+
+	GoodJob = "GoodJob"
+	Pipeline = "Pipeline"
+	CronTrigger = "CronTrigger"
 )

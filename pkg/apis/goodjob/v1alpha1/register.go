@@ -21,11 +21,11 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	goodjobcontroller "github.com/fudali113/good-job/pkg/apis/goodjob"
+	"github.com/fudali113/good-job/pkg/apis/goodjob"
 )
 
 // SchemeGroupVersion is group version used to register these objects
-var SchemeGroupVersion = schema.GroupVersion{Group: goodjobcontroller.GroupName, Version: "v1alpha1"}
+var SchemeGroupVersion = schema.GroupVersion{Group: goodjob.GroupName, Version: goodjob.Version}
 
 // Kind takes an unqualified kind and returns back a Group qualified GroupKind
 func Kind(kind string) schema.GroupKind {

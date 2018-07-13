@@ -1,47 +1,38 @@
 package controller
 
 import (
+	"os"
 	"time"
+	"path/filepath"
+	"encoding/json"
 
+	"github.com/golang/glog"
 	"github.com/fudali113/good-job/pkg/client/clientset/versioned"
 	"github.com/fudali113/good-job/typed"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-
-	"encoding/json"
-	"github.com/fudali113/good-job/pkg/apis/goodjob"
-	informers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
-	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
-	"os"
-	"path/filepath"
-	"github.com/golang/glog"
-)
 
-const (
-	GoodJobNameLabel       = goodjob.GroupName + "/goodJobName"
-	PipelineNameLabel      = goodjob.GroupName + "/pipelineName"
-	ShardLabel             = goodjob.GroupName + "/shard"
-	ShardIndexLabel        = goodjob.GroupName + "/shardIndex"
-	ShardMatchPatternLabel = goodjob.GroupName + "/shardMatchPattern"
+	kubeinformers "k8s.io/client-go/informers"
+	goodinformers "github.com/fudali113/good-job/pkg/client/informers/externalversions"
 )
 
 var clientset *typed.Clientset
 
 // Start 根据 Config 运行 controller
-func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
+func Start(config typed.RuntimeConfig, stopCh <-chan struct{}) {
 
-	goodInformers := informers.NewSharedInformerFactoryWithOptions(
+	goodInformersFactory := goodinformers.NewSharedInformerFactoryWithOptions(
 		clientset.GoodJobClientset,
 		1*time.Second,
-		informers.WithNamespace("good-job"))
-	kubeInformers := kubeinformers.NewSharedInformerFactoryWithOptions(
+		goodinformers.WithNamespace("good-job"))
+	kubeInformersFactory := kubeinformers.NewSharedInformerFactoryWithOptions(
 		clientset.Clientset,
 		1*time.Second,
 		kubeinformers.WithNamespace("good-job"))
 
-	googjobInformer := goodInformers.Goodjob().V1alpha1().GoodJobs()
+	googjobInformer := goodInformersFactory.Goodjob().V1alpha1().GoodJobs()
 
 	googjobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc:    addGoodJob,
@@ -52,7 +43,7 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 		},
 	})
 
-	jobInformer := kubeInformers.Batch().V1().Jobs()
+	jobInformer := kubeInformersFactory.Batch().V1().Jobs()
 
 	jobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
@@ -66,8 +57,19 @@ func Start(config typed.RuntimeConfig, stop <-chan struct{}) {
 		},
 	})
 
-	goodInformers.Start(stop)
-	kubeInformers.Start(stop)
+	goodInformersFactory.Start(stopCh)
+	kubeInformersFactory.Start(stopCh)
+
+
+	goodJobController := NewGoodJobController(
+		clientset.Clientset,
+		clientset.GoodJobClientset,
+		kubeInformersFactory.Batch().V1().Jobs(),
+		goodInformersFactory.Goodjob().V1alpha1().GoodJobs())
+
+	if err := goodJobController.Run(2, stopCh); err != nil {
+		glog.Fatalf("Error running goodJobController: %s", err.Error())
+	}
 
 }
 

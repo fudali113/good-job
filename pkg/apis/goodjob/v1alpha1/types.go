@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"k8s.io/api/batch/v1beta1"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -56,13 +57,13 @@ type GoodJobSpec struct {
 // GoodJobShard 分片程序的配置
 type GoodJobShard struct {
 	// 分片的类型
-	Type string 				`json:"type" protobuf:"bytes,,opt,name=type"`
+	Type string `json:"type" protobuf:"bytes,,opt,name=type"`
 	// 执行分片程序的配置
 	Template v1.PodTemplateSpec `json:"template" protobuf:"bytes,6,opt,name=template"`
 	// 匹配日志的正则表达式
-	MatchPattern string 		`json:"matchPattern" protobuf:"bytes,6,opt,name=matchPattern"`
+	MatchPattern string `json:"matchPattern" protobuf:"bytes,6,opt,name=matchPattern"`
 	// 手动设置分片
-	Shards []string 			`json:"shards" protobuf:"bytes,,opt,name=shards"`
+	Shards []string `json:"shards" protobuf:"bytes,,opt,name=shards"`
 }
 
 // FooStatus is the status for a Foo resource
@@ -98,15 +99,22 @@ type PipelineList struct {
 
 // PipelineSpec is the spec for a Pipeline resource
 type PipelineSpec struct {
-	Name string               `json:"name"`
-	Jobs map[string][]GoodJob `json:"jobs"`
+	Head []string `json:"head" protobuf:"bytes,,opt,name=head"`
+	Jobs []Job    `json:"jobs" protobuf:"bytes,,opt,name=jobs"`
+}
+
+type Job struct {
+	Needs                   []string `json:"needs"`
+	Triggers                []string `json:"triggers"`
+	Type                    string   `json:"type"`
+	v1beta1.JobTemplateSpec `json:"jobTemplate"`
 }
 
 // PipelineStatus is the status for a Pipeline resource
 type PipelineStatus struct {
-	NowJob       string            `json:"nowJob"`
-	AdditionInfo map[string]string `json:"addition_info"`
-	Logs         []string          `json:"logs"`
+	Status    string            `json:"status"`
+	Shards    map[string]string `json:"shards"`
+	JobStatuses map[string]string 	`json:"jobStatuses"`
 }
 
 // +genclient
